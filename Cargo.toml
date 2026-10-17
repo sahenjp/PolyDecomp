@@ -20,7 +20,7 @@ thiserror = "2"
 object = { version = "0.40", default-features = false, features = ["read", "std", "compression"] }
 iced-x86 = { version = "1.21", default-features = false, features = ["std", "decoder", "nasm"] }
 wasmprinter = "0.258"
-zip = { version = "8", default-features = false, features = ["deflate"] }
+zip = { version = "9", default-features = false, features = ["deflate"] }
 
 [profile.release]
 lto = "thin"
