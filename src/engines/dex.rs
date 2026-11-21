@@ -655,7 +655,7 @@ pub fn decompile_apk(data: &[u8]) -> Result<Vec<(String, String)>, String> {
         let mut entry = archive
             .by_index(index)
             .map_err(|e| format!("APK entry error: {e}"))?;
-        let name = safe_name(entry.name());
+        let name = safe_name(&entry.name().map_err(|e| format!("APK entry error: {e}"))?);
         let base = name.rsplit('/').next().unwrap_or(&name);
         if !base.starts_with("classes") || !base.ends_with(".dex") {
             continue;

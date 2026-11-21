@@ -517,7 +517,8 @@ pub fn decompile_jar(data: &[u8]) -> Result<Vec<(String, String)>, String> {
     let mut output = Vec::new();
     for index in 0..archive.len() {
         let mut entry = archive.by_index(index).map_err(|error| error.to_string())?;
-        if entry.is_dir() || !entry.name().ends_with(".class") {
+        let name = entry.name().map_err(|error| error.to_string())?;
+        if entry.is_dir() || !name.ends_with(".class") {
             continue;
         }
         if entry.size() > MAX_ARCHIVE_MEMBER {
@@ -527,10 +528,7 @@ pub fn decompile_jar(data: &[u8]) -> Result<Vec<(String, String)>, String> {
         if total > MAX_ARCHIVE_TOTAL {
             return Err("JAR expanded size exceeds safety limit".to_owned());
         }
-        let output_name = format!(
-            "{}.java",
-            safe_name(entry.name()).trim_end_matches(".class")
-        );
+        let output_name = format!("{}.java", safe_name(&name).trim_end_matches(".class"));
         let mut bytes = Vec::with_capacity(usize::try_from(entry.size()).unwrap_or(0));
         entry
             .read_to_end(&mut bytes)
